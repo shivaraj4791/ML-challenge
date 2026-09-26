@@ -1,0 +1,47 @@
+# Python Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python Cache & Bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Environment Variables and Credentials
+.env
+*.env
+.env.*
+
+# Datasets (2.6 GB dataset must NOT be tracked or uploaded)
+dataset/
+
+# Model Checkpoints and Large Weights/Artifacts
+*.pkl
+*.joblib
+*.pt
+*.pth
+*.bin
+*.onnx
+*.h5
+models/*
+!models/.gitkeep
+
+# Output Predictions and Submissions
+output/predictions/*
+!output/predictions/.gitkeep
+output/submissions/*
+!output/submissions/.gitkeep
+
+# IDE and Editor Configs
+.vscode/
+.idea/
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
