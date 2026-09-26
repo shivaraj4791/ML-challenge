@@ -1,0 +1,378 @@
+===========================================================================
+AMAZON ML CHALLENGE 2026 - DATASET PROFILING REPORT
+Generated at: 2026-09-27 01:44:15
+Dataset directory: D:\amazon-ml-challenge\amazon-ml-challenge\dataset
+Processing method: Streaming chunked reading (zero RAM caching, memory safe)
+===========================================================================
+
+===========================================================================
+GROUND TRUTH FILE: train\train_ground_truth.tsv
+Absolute Path: D:\amazon-ml-challenge\amazon-ml-challenge\dataset\train\train_ground_truth.tsv
+File Size: 121.13 MB (121.13149929046631 bytes)
+===========================================================================
+Schema Detected (2 columns): ['source1_entity_id', 'matched_entity_ids']
+
+Ground Truth Overview:
+  Total S1 Entities Evaluated: 2,206,821
+  Total Match Pairs (Ground Truth edges): 7,638,365
+    * Matches to Source 2 (S1-S2 pairs): 3,693,619 (48.36%)
+    * Matches to Source 3 (S1-S3 pairs): 3,944,746 (51.64%)
+  Distinct Matched S2 Entities: 3,693,619
+  Distinct Matched S3 Entities: 3,944,746
+  Elapsed Processing Time: 7.14 seconds
+
+Singleton & Match Co-occurrence Breakdown:
+  - Singleton S1 Entities (0 matches in S2/S3): 123,247 (5.58%)
+  - S1 Entities Matching Only S2: 143,029 (6.48%)
+  - S1 Entities Matching Only S3: 164,498 (7.45%)
+  - S1 Entities Matching Both S2 and S3: 1,776,047 (80.48%)
+  - S1 Entities with >= 1 Match: 2,083,574 (94.42%)
+
+Matches-per-S1 Detailed Statistics:
+  - Min: 0
+  - Max: 11
+  - Mean: 3.4613
+  - Median: 3
+  - Standard Deviation: 1.7053
+  - Percentiles (exact):
+      * p10: 1 matches
+      * p25: 2 matches
+      * p50: 3 matches
+      * p75: 5 matches
+      * p90: 6 matches
+      * p95: 6 matches
+      * p99: 8 matches
+      * p99.9: 9 matches
+
+Breakdown by Source (per S1):
+  - S2 Matches per S1: Min=0, Max=5, Mean=1.6737, Median=2, p75=2, p90=3, p99=5
+  - S3 Matches per S1: Min=0, Max=6, Mean=1.7875, Median=2, p75=3, p90=3, p99=5
+
+Matches-per-S1 Frequency Distribution:
+    * 0 matches (singletons)   : 123,247 (5.58%)
+    * 1 match                  : 119,157 (5.40%)
+    * 2 matches                : 375,212 (17.00%)
+    * 3 matches                : 530,841 (24.05%)
+    * 4 matches                : 484,115 (21.94%)
+    * 5 matches                : 321,957 (14.59%)
+    * 6 to 10 matches          : 252,255 (11.43%)
+    * 11 to 20 matches         : 37 (0.00%)
+    * 21 to 50 matches         : 0 (0.00%)
+    * > 50 matches             : 0 (0.00%)
+
+===========================================================================
+FILE: train\train_source1.tsv
+Absolute Path: D:\amazon-ml-challenge\amazon-ml-challenge\dataset\train\train_source1.tsv
+File Size: 200.34 MB (200.33808994293213 bytes)
+===========================================================================
+Schema Detected (4 columns): ['entity_id', 'business_name', 'business_address', 'country']
+Column Mapping: ID col index=0 (entity_id), Name col index=1 (business_name), Address col index=2 (business_address), Country col index=3 (country)
+
+Processing Summary:
+  Total Rows: 2,206,821
+  Total Columns: 4
+  Malformed Rows: 0
+  Elapsed Processing Time: 15.29 seconds (144,286 rows/s)
+
+Missing Values Breakdown:
+  - entity_id: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_name: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_address: 0 missing (0.0000%) [whitespace-only: 0]
+  - country: 0 missing (0.0000%) [whitespace-only: 0]
+
+ID Column Statistics (entity_id):
+  - Exact Unique ID Count: 2,206,821
+  - Duplicate IDs: 0
+  - Format Mismatches (^S[123]-\d+$): 0
+  - Sample IDs: S1-925783039, S1-773889195, S1-377745466, S1-133037285, S1-755362802
+
+Country Distribution (country):
+  - Total Distinct Countries: 2
+    * US: 1,323,633 (59.98%)
+    * India: 883,188 (40.02%)
+
+Business Name Statistics (business_name):
+  - Valid (non-empty) Count: 2,206,821 (100.00%)
+  - Missing Count: 0 (0.0000%)
+  - Length (exact chars): Min = 3, Max = 105, Mean = 24.03, Median = 24
+  - Length Percentiles (exact): p25 = 18, p50 = 24, p75 = 30, p90 = 34, p95 = 37, p99 = 42
+  - Non-ASCII / Multilingual Names: 0 (0.00%)
+
+Business Address Statistics (business_address):
+  - Valid (non-empty) Count: 2,206,821 (100.00%)
+  - Missing Count: 0 (0.0000%)
+  - Length (exact chars): Min = 11, Max = 256, Mean = 52.07, Median = 41
+  - Length Percentiles (exact): p25 = 33, p50 = 41, p75 = 70, p90 = 90, p95 = 103, p99 = 124
+  - Non-ASCII / Multilingual Addresses: 554 (0.03%)
+
+===========================================================================
+FILE: train\train_source2.tsv
+Absolute Path: D:\amazon-ml-challenge\amazon-ml-challenge\dataset\train\train_source2.tsv
+File Size: 466.63 MB (466.63426208496094 bytes)
+===========================================================================
+Schema Detected (4 columns): ['entity_id', 'business_name', 'business_address', 'country']
+Column Mapping: ID col index=0 (entity_id), Name col index=1 (business_name), Address col index=2 (business_address), Country col index=3 (country)
+
+Processing Summary:
+  Total Rows: 5,034,616
+  Total Columns: 4
+  Malformed Rows: 0
+  Elapsed Processing Time: 33.51 seconds (150,226 rows/s)
+
+Missing Values Breakdown:
+  - entity_id: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_name: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_address: 168,967 missing (3.3561%) [whitespace-only: 0]
+  - country: 0 missing (0.0000%) [whitespace-only: 0]
+
+ID Column Statistics (entity_id):
+  - Exact Unique ID Count: 5,034,616
+  - Duplicate IDs: 0
+  - Format Mismatches (^S[123]-\d+$): 0
+  - Sample IDs: S2-166376419, S2-764573417, S2-639257739, S2-163963287, S2-49942811
+
+Country Distribution (country):
+  - Total Distinct Countries: 2
+    * US: 3,016,817 (59.92%)
+    * India: 2,017,799 (40.08%)
+
+Business Name Statistics (business_name):
+  - Valid (non-empty) Count: 5,034,616 (100.00%)
+  - Missing Count: 0 (0.0000%)
+  - Length (exact chars): Min = 2, Max = 104, Mean = 25.10, Median = 25
+  - Length Percentiles (exact): p25 = 19, p50 = 25, p75 = 31, p90 = 37, p95 = 40, p99 = 48
+  - Non-ASCII / Multilingual Names: 764,608 (15.19%)
+
+Business Address Statistics (business_address):
+  - Valid (non-empty) Count: 4,865,649 (96.64%)
+  - Missing Count: 168,967 (3.3561%)
+  - Length (exact chars): Min = 8, Max = 249, Mean = 47.83, Median = 37
+  - Length Percentiles (exact): p25 = 31, p50 = 37, p75 = 63, p90 = 84, p95 = 97, p99 = 118
+  - Non-ASCII / Multilingual Addresses: 478,453 (9.83%)
+
+===========================================================================
+FILE: train\train_source3.tsv
+Absolute Path: D:\amazon-ml-challenge\amazon-ml-challenge\dataset\train\train_source3.tsv
+File Size: 480.37 MB (480.3711290359497 bytes)
+===========================================================================
+Schema Detected (4 columns): ['entity_id', 'business_name', 'business_address', 'country']
+Column Mapping: ID col index=0 (entity_id), Name col index=1 (business_name), Address col index=2 (business_address), Country col index=3 (country)
+
+Processing Summary:
+  Total Rows: 5,285,603
+  Total Columns: 4
+  Malformed Rows: 0
+  Elapsed Processing Time: 36.48 seconds (144,889 rows/s)
+
+Missing Values Breakdown:
+  - entity_id: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_name: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_address: 175,916 missing (3.3282%) [whitespace-only: 0]
+  - country: 0 missing (0.0000%) [whitespace-only: 0]
+
+ID Column Statistics (entity_id):
+  - Exact Unique ID Count: 5,285,603
+  - Duplicate IDs: 0
+  - Format Mismatches (^S[123]-\d+$): 0
+  - Sample IDs: S3-202863386, S3-859268022, S3-22467283, S3-671162755, S3-960981775
+
+Country Distribution (country):
+  - Total Distinct Countries: 2
+    * US: 3,170,056 (59.98%)
+    * India: 2,115,547 (40.02%)
+
+Business Name Statistics (business_name):
+  - Valid (non-empty) Count: 5,285,603 (100.00%)
+  - Missing Count: 0 (0.0000%)
+  - Length (exact chars): Min = 2, Max = 123, Mean = 25.20, Median = 25
+  - Length Percentiles (exact): p25 = 18, p50 = 25, p75 = 31, p90 = 37, p95 = 42, p99 = 50
+  - Non-ASCII / Multilingual Names: 606,737 (11.48%)
+
+Business Address Statistics (business_address):
+  - Valid (non-empty) Count: 5,109,687 (96.67%)
+  - Missing Count: 175,916 (3.3282%)
+  - Length (exact chars): Min = 2, Max = 240, Mean = 48.32, Median = 42
+  - Length Percentiles (exact): p25 = 35, p50 = 42, p75 = 55, p90 = 78, p95 = 92, p99 = 116
+  - Non-ASCII / Multilingual Addresses: 476,588 (9.33%)
+
+===========================================================================
+FILE: test\test_source1.tsv
+Absolute Path: D:\amazon-ml-challenge\amazon-ml-challenge\dataset\test\test_source1.tsv
+File Size: 166.91 MB (166.9140682220459 bytes)
+===========================================================================
+Schema Detected (4 columns): ['entity_id', 'business_name', 'business_address', 'country']
+Column Mapping: ID col index=0 (entity_id), Name col index=1 (business_name), Address col index=2 (business_address), Country col index=3 (country)
+
+Processing Summary:
+  Total Rows: 1,732,544
+  Total Columns: 4
+  Malformed Rows: 0
+  Elapsed Processing Time: 12.38 seconds (139,922 rows/s)
+
+Missing Values Breakdown:
+  - entity_id: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_name: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_address: 0 missing (0.0000%) [whitespace-only: 0]
+  - country: 0 missing (0.0000%) [whitespace-only: 0]
+
+ID Column Statistics (entity_id):
+  - Exact Unique ID Count: 1,732,544
+  - Duplicate IDs: 0
+  - Format Mismatches (^S[123]-\d+$): 0
+  - Sample IDs: S1-714132312, S1-106407869, S1-156285671, S1-689823050, S1-921369899
+
+Country Distribution (country):
+  - Total Distinct Countries: 3
+    * India: 809,986 (46.75%)
+    * US: 663,106 (38.27%)
+    * France: 259,452 (14.98%)
+
+Business Name Statistics (business_name):
+  - Valid (non-empty) Count: 1,732,544 (100.00%)
+  - Missing Count: 0 (0.0000%)
+  - Length (exact chars): Min = 3, Max = 92, Mean = 23.84, Median = 24
+  - Length Percentiles (exact): p25 = 18, p50 = 24, p75 = 29, p90 = 34, p95 = 36, p99 = 42
+  - Non-ASCII / Multilingual Names: 40,789 (2.35%)
+
+Business Address Statistics (business_address):
+  - Valid (non-empty) Count: 1,732,544 (100.00%)
+  - Missing Count: 0 (0.0000%)
+  - Length (exact chars): Min = 11, Max = 268, Mean = 57.21, Median = 50
+  - Length Percentiles (exact): p25 = 36, p50 = 50, p75 = 74, p90 = 93, p95 = 105, p99 = 126
+  - Non-ASCII / Multilingual Addresses: 73,800 (4.26%)
+
+===========================================================================
+FILE: test\test_source2.tsv
+Absolute Path: D:\amazon-ml-challenge\amazon-ml-challenge\dataset\test\test_source2.tsv
+File Size: 485.86 MB (485.855504989624 bytes)
+===========================================================================
+Schema Detected (4 columns): ['entity_id', 'business_name', 'business_address', 'country']
+Column Mapping: ID col index=0 (entity_id), Name col index=1 (business_name), Address col index=2 (business_address), Country col index=3 (country)
+
+Processing Summary:
+  Total Rows: 4,887,273
+  Total Columns: 4
+  Malformed Rows: 0
+  Elapsed Processing Time: 33.69 seconds (145,045 rows/s)
+
+Missing Values Breakdown:
+  - entity_id: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_name: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_address: 129,408 missing (2.6479%) [whitespace-only: 0]
+  - country: 0 missing (0.0000%) [whitespace-only: 0]
+
+ID Column Statistics (entity_id):
+  - Exact Unique ID Count: 4,887,273
+  - Duplicate IDs: 0
+  - Format Mismatches (^S[123]-\d+$): 0
+  - Sample IDs: S2-192345572, S2-566025912, S2-158121477, S2-89663826, S2-884102769
+
+Country Distribution (country):
+  - Total Distinct Countries: 3
+    * India: 2,312,565 (47.32%)
+    * US: 1,871,330 (38.29%)
+    * France: 703,378 (14.39%)
+
+Business Name Statistics (business_name):
+  - Valid (non-empty) Count: 4,887,273 (100.00%)
+  - Missing Count: 0 (0.0000%)
+  - Length (exact chars): Min = 2, Max = 102, Mean = 25.70, Median = 25
+  - Length Percentiles (exact): p25 = 19, p50 = 25, p75 = 32, p90 = 38, p95 = 42, p99 = 49
+  - Non-ASCII / Multilingual Names: 928,158 (18.99%)
+
+Business Address Statistics (business_address):
+  - Valid (non-empty) Count: 4,757,865 (97.35%)
+  - Missing Count: 129,408 (2.6479%)
+  - Length (exact chars): Min = 5, Max = 269, Mean = 51.78, Median = 43
+  - Length Percentiles (exact): p25 = 32, p50 = 43, p75 = 68, p90 = 87, p95 = 99, p99 = 120
+  - Non-ASCII / Multilingual Addresses: 720,665 (15.15%)
+
+===========================================================================
+FILE: test\test_source3.tsv
+Absolute Path: D:\amazon-ml-challenge\amazon-ml-challenge\dataset\test\test_source3.tsv
+File Size: 482.56 MB (482.5618476867676 bytes)
+===========================================================================
+Schema Detected (4 columns): ['entity_id', 'business_name', 'business_address', 'country']
+Column Mapping: ID col index=0 (entity_id), Name col index=1 (business_name), Address col index=2 (business_address), Country col index=3 (country)
+
+Processing Summary:
+  Total Rows: 5,082,316
+  Total Columns: 4
+  Malformed Rows: 0
+  Elapsed Processing Time: 34.62 seconds (146,795 rows/s)
+
+Missing Values Breakdown:
+  - entity_id: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_name: 0 missing (0.0000%) [whitespace-only: 0]
+  - business_address: 136,098 missing (2.6779%) [whitespace-only: 0]
+  - country: 0 missing (0.0000%) [whitespace-only: 0]
+
+ID Column Statistics (entity_id):
+  - Exact Unique ID Count: 5,082,316
+  - Duplicate IDs: 0
+  - Format Mismatches (^S[123]-\d+$): 0
+  - Sample IDs: S3-462677478, S3-374810425, S3-198586129, S3-10300249, S3-604980231
+
+Country Distribution (country):
+  - Total Distinct Countries: 3
+    * India: 2,405,000 (47.32%)
+    * US: 1,945,701 (38.28%)
+    * France: 731,615 (14.40%)
+
+Business Name Statistics (business_name):
+  - Valid (non-empty) Count: 5,082,316 (100.00%)
+  - Missing Count: 0 (0.0000%)
+  - Length (exact chars): Min = 2, Max = 103, Mean = 25.66, Median = 25
+  - Length Percentiles (exact): p25 = 19, p50 = 25, p75 = 32, p90 = 38, p95 = 42, p99 = 50
+  - Non-ASCII / Multilingual Names: 737,515 (14.51%)
+
+Business Address Statistics (business_address):
+  - Valid (non-empty) Count: 4,946,218 (97.32%)
+  - Missing Count: 136,098 (2.6779%)
+  - Length (exact chars): Min = 5, Max = 267, Mean = 50.08, Median = 44
+  - Length Percentiles (exact): p25 = 36, p50 = 44, p75 = 59, p90 = 82, p95 = 95, p99 = 118
+  - Non-ASCII / Multilingual Addresses: 729,222 (14.74%)
+
+===========================================================================
+CROSS-FILE SYNTHESIS & UNEXPECTED DATA QUALITY FINDINGS
+===========================================================================
+
+1. Exact Row and Column Counts Summary:
+  - File Name                      |         Rows |   Cols |       File Size
+  -------------------------------+--------------+--------+----------------
+  - train\train_ground_truth.tsv   |    2,206,821 |      2 | 121.13 MB (127,015,583 bytes)
+  - train\train_source1.tsv        |    2,206,821 |      4 | 200.34 MB (210,069,713 bytes)
+  - train\train_source2.tsv        |    5,034,616 |      4 | 466.63 MB (489,301,488 bytes)
+  - train\train_source3.tsv        |    5,285,603 |      4 | 480.37 MB (503,705,637 bytes)
+  - test\test_source1.tsv          |    1,732,544 |      4 | 166.91 MB (175,022,086 bytes)
+  - test\test_source2.tsv          |    4,887,273 |      4 | 485.86 MB (509,456,422 bytes)
+  - test\test_source3.tsv          |    5,082,316 |      4 | 482.56 MB (506,002,772 bytes)
+  -------------------------------+--------------+--------+----------------
+  - TOTAL ALL FILES                |   26,435,994 |     -- | 2.35 GB (2,520,573,701 bytes)
+
+2. Key Data Quality Findings:
+  a) Reference Source Cleanliness (Source 1):
+     * train_source1.tsv and test_source1.tsv have 0% missing names and 0% missing addresses.
+     * Source 1 serves as the ground-truth anchor, fully clean with 100% complete records.
+  b) Missingness in Secondary Sources (Source 2 and Source 3):
+     * Both Source 2 and Source 3 have ~3.3% to 3.4% missing addresses.
+     * However, business names are 100% complete (0 missing) across all sources.
+  c) Country Distribution Shift:
+     * Training datasets strictly contain only 'US' (~60%) and 'India' (~40%).
+     * Test datasets introduce 'France' (~14.4% - 15.0%) alongside 'India' (~47.3%) and 'US' (~38.3%).
+     * Country is 100% complete with 0 missing values across all source files.
+     * Because entities match within their country, country serves as a primary blocking key,
+       and pipelines must support French text/addresses during evaluation.
+  d) Multilingual & Script Variations:
+     * Indian business names and addresses frequently use Indic scripts (e.g. Devanagari / Hindi)
+       alongside English, transliterations, and Romanized spellings.
+  e) Singleton Prevalence in Ground Truth:
+     * Exactly 123,247 S1 entities (5.58%) have ZERO matches.
+     * This means the model must have high precision and be confident in predicting empty matches
+       rather than over-predicting false positive matches.
+  f) ID Uniqueness & Strict Formatting:
+     * Every entity ID strictly follows '^S[123]-\d+$'.
+     * Zero duplicate IDs exist within any source file.
+  g) Matches-Per-S1 Skewness:
+     * Mean matches per S1: 3.46, Median: 3.
+     * Max matches for a single S1 entity is 11, showing long-tail outliers.
