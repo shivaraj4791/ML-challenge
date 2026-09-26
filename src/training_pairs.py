@@ -218,6 +218,7 @@ class GroundTruthIndex:
         filepath: str | os.PathLike[str],
         sep: str = "\t",
         max_rows: Optional[int] = None,
+        filter_s1_ids: Optional[Set[str]] = None,
     ) -> GroundTruthIndex:
         """Parse ground truth TSV into a GroundTruthIndex in a streaming manner.
 
@@ -225,6 +226,7 @@ class GroundTruthIndex:
             filepath: Path to ground truth TSV file.
             sep: Column separator (default tab).
             max_rows: Optional row limit for testing or small-sample runs.
+            filter_s1_ids: Optional set of S1 IDs to restrict loading to.
 
         Returns:
             Populated GroundTruthIndex instance.
@@ -275,6 +277,8 @@ class GroundTruthIndex:
                     continue
                 s1_id = row[s1_idx].strip() if len(row) > s1_idx else ""
                 if not s1_id:
+                    continue
+                if filter_s1_ids is not None and s1_id not in filter_s1_ids:
                     continue
 
                 raw_matches = row[matches_idx].strip() if len(row) > matches_idx else ""

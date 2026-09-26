@@ -299,3 +299,81 @@ def blocking_reduction_ratio(n_total: int, n_candidate_pairs: int) -> float:
         return 1.0
     kept = min(n_candidate_pairs, max_pairs)
     return 1.0 - (kept / max_pairs)
+
+
+# ---------------------------------------------------------------------------
+# Dataset Path Resolution
+# ---------------------------------------------------------------------------
+
+
+def resolve_dataset_paths(
+    project_root: Optional[str | os.PathLike[str]] = None,
+) -> dict[str, Path]:
+    """Resolve and return verified paths to the raw dataset TSV files.
+
+    Resolution precedence:
+    1. Environment variable ``DATASET_DIR`` or ``AMAZON_ML_DATASET_DIR``.
+    2. Configuration file ``config/dataset_config.json``.
+    3. Standard candidate paths relative to project root or user profile.
+
+    Returns:
+        Dict with keys: 'dataset_dir', 'train_source1', 'train_source2',
+        'train_source3', 'train_ground_truth', each mapping to a verified Path.
+
+    Raises:
+        FileNotFoundError: If the dataset files cannot be located.
+    """
+    import json
+
+    if project_root is None:
+        project_root = Path(__file__).resolve().parent.parent
+    else:
+        project_root = Path(project_root).resolve()
+
+    candidate_dirs: list[Path] = []
+
+    # 1. Environment variables
+    for env_var in ("DATASET_DIR", "AMAZON_ML_DATASET_DIR"):
+        val = os.environ.get(env_var)
+        if val:
+            candidate_dirs.append(Path(val))
+
+    # 2. Config file
+    config_file = project_root / "config" / "dataset_config.json"
+    if config_file.exists():
+        try:
+            with open(config_file, "r", encoding="utf-8") as f:
+                cfg = json.load(f)
+            if "dataset_dir" in cfg:
+                candidate_dirs.append(Path(cfg["dataset_dir"]))
+        except Exception:
+            pass
+
+    # 3. Standard paths
+    candidate_dirs.extend([
+        project_root / "dataset",
+        Path(r"C:\Users\somes\Downloads\6ab10eb3b23ba_student_resource\student_resource\dataset"),
+        Path(r"D:\amazon-ml-challenge\amazon-ml-challenge\dataset"),
+    ])
+
+    for base_dir in candidate_dirs:
+        train_dir = base_dir / "train" if (base_dir / "train").exists() else base_dir
+        s1 = train_dir / "train_source1.tsv"
+        s2 = train_dir / "train_source2.tsv"
+        s3 = train_dir / "train_source3.tsv"
+        gt = train_dir / "train_ground_truth.tsv"
+
+        if s1.exists() and s2.exists() and s3.exists() and gt.exists():
+            return {
+                "dataset_dir": base_dir,
+                "train_source1": s1,
+                "train_source2": s2,
+                "train_source3": s3,
+                "train_ground_truth": gt,
+            }
+
+    raise FileNotFoundError(
+        "Could not resolve raw dataset directory. Looked in: "
+        + ", ".join(str(d) for d in candidate_dirs)
+    )
+

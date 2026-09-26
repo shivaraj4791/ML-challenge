@@ -1,0 +1,7 @@
+{
+  "dataset_dir": "C:\\Users\\somes\\Downloads\\6ab10eb3b23ba_student_resource\\student_resource\\dataset",
+  "train_source1": "C:\\Users\\somes\\Downloads\\6ab10eb3b23ba_student_resource\\student_resource\\dataset\\train\\train_source1.tsv",
+  "train_source2": "C:\\Users\\somes\\Downloads\\6ab10eb3b23ba_student_resource\\student_resource\\dataset\\train\\train_source2.tsv",
+  "train_source3": "C:\\Users\\somes\\Downloads\\6ab10eb3b23ba_student_resource\\student_resource\\dataset\\train\\train_source3.tsv",
+  "train_ground_truth": "C:\\Users\\somes\\Downloads\\6ab10eb3b23ba_student_resource\\student_resource\\dataset\\train\\train_ground_truth.tsv"
+}
