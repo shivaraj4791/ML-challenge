@@ -1,0 +1,166 @@
+================================================================================
+AMAZON ML CHALLENGE 2026 - BASELINE RESULTS SUMMARY
+================================================================================
+Generated : 2026-09-26 22:16:47 UTC
+Source    : 2026-09-26 22:01:35 UTC
+Scale     : Source 1 (2.21M), Source 2 (5.03M), Source 3 (5.29M)
+Evaluation: Full Ground Truth - 7,638,365 true pairs
+
+--------------------------------------------------------------------------------
+0. PRE-RUN VERIFICATION
+--------------------------------------------------------------------------------
+  [FAIL] GIT WORKING TREE HAS UNCOMMITTED CHANGES:
+?? src/analyze_baseline_results.py
+
+--------------------------------------------------------------------------------
+1. CANDIDATE VOLUME REDUCTION
+--------------------------------------------------------------------------------
+  Total unconstrained search space:          22,774,876,013,799 pairs  (~22.77 Trillion)
+  After country blocking only:               11,839,670,856,657 pairs  [~48% reduction]
+  After exact name + country:                8,343,624 pairs  [99.999963% reduction]
+  After norm name + country:                 23,410,128 pairs  [99.9999% reduction]
+
+--------------------------------------------------------------------------------
+2. BASELINE MATCHER EVALUATION (Full Ground Truth)
+--------------------------------------------------------------------------------
+
+  Strategy: 1. Exact Name + Country
+  Source               TP           FP           FN  Precision     Recall         F1
+  ------------------------------------------------------------------------
+  S2              174,617    3,735,805    3,519,002     0.0447     0.0473     0.0459
+  S3              179,501    4,253,701    3,765,245     0.0405     0.0455     0.0429
+  Overall         354,118    7,989,506    7,284,247     0.0424     0.0464     0.0443
+
+  Strategy: 2. Normalized Name + Country (Simple Baseline)
+  Source               TP           FP           FN  Precision     Recall         F1
+  ------------------------------------------------------------------------
+  S2              839,488   10,218,642    2,854,131     0.0759     0.2273     0.1138
+  S3              893,381   11,458,617    3,051,365     0.0723     0.2265     0.1096
+  Overall       1,732,869   21,677,259    5,905,496     0.0740     0.2269     0.1116
+
+  Strategy: 3. Norm Name + Country + Address JW>=0.6 (Strict)
+  Source               TP           FP           FN  Precision     Recall         F1
+  ------------------------------------------------------------------------
+  S2              785,423    3,314,377    2,908,196     0.1916     0.2126     0.2016
+  S3              804,198    3,592,139    3,140,548     0.1829     0.2039     0.1928
+  Overall       1,589,621    6,906,516    6,048,744     0.1871     0.2081     0.1970
+
+  Strategy: 4. Norm Name + Country + Address JW>=0.6 (Missing-Tolerant)
+  Source               TP           FP           FN  Precision     Recall         F1
+  ------------------------------------------------------------------------
+  S2              831,435    3,594,414    2,862,184     0.1879     0.2251     0.2048
+  S3              850,910    3,803,845    3,093,836     0.1828     0.2157     0.1979
+  Overall       1,682,345    7,398,259    5,956,020     0.1853     0.2202     0.2012
+
+--------------------------------------------------------------------------------
+3. SAMPLE TRUE-MATCH FEATURE ANALYSIS (N=5,000)
+--------------------------------------------------------------------------------
+  Sample: 5,000 pairs  (S2: 2,383, S3: 2,617)
+
+  Match Rates Among True Matches:
+  Exact normalized name match:               23.92%
+  Missing secondary address:                 4.46%
+  High name sim (>=0.92) AND low addr sim (<0.70): 7.08%
+  High addr sim (>=0.90) AND low name sim (<0.80): 8.18%
+
+  Name Jaro-Winkler Distribution:
+    mean=0.8809 std=0.1656  p10=0.6009 p25=0.8599 p50=0.9500 p75=0.9871 p90=1.0000 p95=1.0000
+    Brackets (% of N=5,000):
+      JW < 0.70        :  12.90%
+      JW 0.70 – 0.80   :   5.94%
+      JW 0.80 – 0.90   :  12.26%
+      JW 0.90 – 0.95   :  18.66%
+      JW >= 0.95       :  50.24%
+
+  Address Jaro-Winkler (All Pairs, missing addr scored 0.0):
+    mean=0.8172 std=0.2167  p10=0.6250 p25=0.7479 p50=0.8861 p75=0.9650 p90=1.0000 p95=1.0000
+    Brackets (% of N=5,000, including missing):
+      missing         :   4.46%
+      < 0.60          :   8.36%
+      0.60 – 0.75     :  17.18%
+      0.75 – 0.90     :  27.56%
+      >= 0.90         :  46.90%
+
+  Address Jaro-Winkler (When Present Only):
+    mean=0.8553 std=0.1285  p10=0.6701 p25=0.7620 p50=0.8963 p75=0.9667 p90=1.0000 p95=1.0000
+
+  Combined Similarity (0.6*Name + 0.4*Addr | fallback to Name):
+    mean=0.8723 std=0.1168  p10=0.6877 p25=0.8339 p50=0.9040 p75=0.9579 p90=0.9813 p95=0.9926
+
+--------------------------------------------------------------------------------
+4. KEY FAILURE PATTERNS FOR ML TO LEARN (Priority Order)
+--------------------------------------------------------------------------------
+
+  [1] HIGH FALSE-NEGATIVE RATE (Priority 1 — Blocking Gap): Normalized Name + 
+       Country baseline misses 5,905,496 true pairs (Recall = 22.7%). Most 
+       true matches fall below the exact normalized-name blocking threshold. 
+       The ML pipeline must use fuzzy name blocking (prefix, token index, 
+       n-gram) to recover these FNs.
+
+  [2] NAME SURFACE-FORM VARIATION (Priority 2 — Feature Gap): Only 4.9% of 
+       true matches share an exact raw name; only 23.92% share an exact 
+       normalized name. The remaining ~76.1% have legal suffix, abbreviation, 
+       casing, word-order, or typo differences. ML needs: Jaro-Winkler, token 
+       Jaccard, token-set ratio, length ratio, and prefix-match features.
+
+  [3] HIGH-NAME / LOW-ADDRESS DISAGREEMENT (7.1% of true-match sample): True 
+       matches exist where name JW >= 0.92 but address JW < 0.70. These arise 
+       from abbreviated vs. expanded address styles or location data latency 
+       differences. A hard address threshold rejects them. ML must learn to 
+       trust strong name signal when address disagreement is present.
+
+  [4] MISSING ADDRESS HANDLING (0.0% of true pairs, 92,724 discarded under 
+       strict rules): Secondary-source entities frequently have empty address 
+       fields. Any rule requiring address similarity unconditionally misses 
+       these. ML needs: is_address_missing binary feature and a name-only 
+       pathway when address is absent.
+
+  [5] ADDRESS FORMULATION VARIATION (13.6% of present-address pairs have JW < 
+       0.70): Street abbreviations, suite numbering, city spelling, and 
+       postal-code differences cause true matches to score poorly on raw JW. 
+       ML should use token-sort ratio, structured sub-field extraction (city, 
+       postal code), and Levenshtein alongside JW.
+
+  [6] BLOCKING OVER-GENERATION / FALSE POSITIVES (21,677,259 FP pairs, 
+       Precision = 7.4% for norm-name baseline): Many businesses share 
+       similar names within a country. ML must learn to distinguish 
+       same-name-different-entity cases using address, token structure, and 
+       any available auxiliary fields.
+
+  [7] HIGH-ADDRESS / LOW-NAME DISAGREEMENT (8.2% of true-match sample): Some 
+       true matches share a high address similarity (JW >= 0.90) but name JW 
+       < 0.80. These may be business-name-change scenarios or franchises 
+       recorded differently. ML can use address as a recovery signal when 
+       name similarity alone is insufficient.
+
+--------------------------------------------------------------------------------
+5. BLOCKING & FEATURE ENGINEERING RECOMMENDATIONS
+--------------------------------------------------------------------------------
+  Blocking:
+    * Country match is mandatory (100% of true matches share country).
+    * Multi-Tier Blocking Union:
+        Tier 1: Exact Normalized Name + Country             (precision core)
+        Tier 2: Name First-5-Char Prefix + Country          (typos/abbrevs)
+        Tier 3: Name Token Inverted Index + Country         (word reordering)
+    * Union targets >90% recall at <35M candidates.
+
+  Features for ML model:
+    * is_address_missing               (binary)
+    * name_jaro_winkler
+    * name_token_jaccard
+    * name_levenshtein_similarity
+    * name_length_ratio
+    * name_prefix_match_length
+    * address_jaro_winkler             (when present)
+    * address_token_sort_ratio         (when present)
+    * address_levenshtein              (when present)
+    * country_match                    (should always be True post-blocking)
+
+  Decision Heuristics (from baseline report):
+    * Name JW >= 0.92 AND address missing -> HIGH CONFIDENCE MATCH
+    * Name JW in [0.75, 0.92] AND addr JW >= 0.70 -> HIGH CONFIDENCE MATCH
+    * Addr JW < 0.35 AND address present -> REJECT (conflicting location)
+
+================================================================================
+END OF BASELINE SUMMARY
+================================================================================
