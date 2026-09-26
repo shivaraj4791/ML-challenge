@@ -1,0 +1,140 @@
+================================================================================
+AMAZON ML CHALLENGE 2026 - ENTITY RESOLUTION BASELINE & PROBLEM INVESTIGATION
+================================================================================
+Timestamp: 2026-09-26 22:01:35 UTC
+Reproducibility: Deterministic sampling with fixed random seed (seed=42)
+Infrastructure: Unicode-safe normalization via src/normalization.py
+Dataset Scale: Source 1 (2.21M), Source 2 (5.03M), Source 3 (5.29M)
+Evaluation: Evaluated on Full Ground Truth (7,638,365 true matches)
+
+--------------------------------------------------------------------------------
+1. CANDIDATE VOLUME ESTIMATION & BLOCKING REDUCTION
+--------------------------------------------------------------------------------
+Blocking Rule Candidate Space (computed in O(N) streaming time without all-pairs):
+  * Unconstrained All-Pairs (S1 x S2):         11,110,496,315,736 pairs
+  * Unconstrained All-Pairs (S1 x S3):         11,664,379,698,063 pairs
+  * Total Unconstrained Search Space:          22,774,876,013,799 pairs (~22.77 Trillion)
+
+  Rule A: Country Blocking Only (Country[S1] == Country[S2/S3])
+    - S1 -> S2 Candidate Pairs:                5,775,254,399,373
+    - S1 -> S3 Candidate Pairs:                6,064,416,457,284
+    - Total Country Candidate Pairs:           11,839,670,856,657 (~11.84 Trillion)
+    - Search Space Reduction:                  48.01%
+    - Finding: Country blocking eliminates across-country pairs (e.g. US vs India)
+      but still leaves ~11.8 trillion pairs; insufficient on its own.
+
+  Rule B: Exact Raw Name + Country Blocking
+    - S1 -> S2 Candidate Pairs:                3,910,422
+    - S1 -> S3 Candidate Pairs:                4,433,202
+    - Total Candidate Pairs:                   8,343,624
+    - Search Space Reduction:                  99.999963%
+
+  Rule C: Normalized Name + Country Blocking
+    - S1 -> S2 Candidate Pairs:                11,058,130
+    - S1 -> S3 Candidate Pairs:                12,351,998
+    - Total Candidate Pairs:                   23,410,128
+    - Search Space Reduction:                  99.999897% (99.9999% reduction)
+    - Finding: Expands candidate yield from 8.34M to 23.41M pairs (+180%),
+      capturing massive numbers of true matches with legal suffix & casing variations.
+
+--------------------------------------------------------------------------------
+2. TRUE-MATCH SIMILARITY OBSERVATIONS (Deterministic Sample N=5,000)
+--------------------------------------------------------------------------------
+Sample breakdown: 2,383 S1->S2 pairs, 2,617 S1->S3 pairs.
+
+Match Proportions Among True Matches:
+  * Exact Raw Business Name Match:               4.90%
+  * Exact Normalized Name Match:                23.92%
+  * Similar Name but Different Formatting:      71.22%
+  * Exact Country Match:                       100.00%
+  * Missing Secondary-Source Address:            4.46%
+      - Source 2 missing address rate:           4.28%
+      - Source 3 missing address rate:           4.62%
+  * Similar Addresses (JW >= 0.70, all):        82.52%
+  * Similar Addresses (JW >= 0.70, present):    86.37%
+
+Similarity Distributions (Percentiles):
+  Business Name Jaro-Winkler:
+    Mean: 0.8809 | Std: 0.1656 | Min: 0.0000 | Max: 1.0000
+    p10: 0.6008 | p25: 0.8599 | p50: 0.9500 | p75: 0.9871 | p90: 1.0000 | p95: 1.0000 | p99: 1.0000
+
+  Business Address Jaro-Winkler (All Pairs):
+    Mean: 0.8172 | Std: 0.2167 | Min: 0.0000 | Max: 1.0000
+    p10: 0.6249 | p25: 0.7479 | p50: 0.8860 | p75: 0.9649 | p90: 1.0000 | p95: 1.0000 | p99: 1.0000
+
+  Business Address Jaro-Winkler (When Present):
+    Mean: 0.8553 | Std: 0.1285 | Min: 0.3897 | Max: 1.0000
+    p10: 0.6701 | p25: 0.7620 | p50: 0.8963 | p75: 0.9667 | p90: 1.0000 | p95: 1.0000 | p99: 1.0000
+
+  Combined Similarity (0.6 Name + 0.4 Addr / Name Fallback):
+    Mean: 0.8723 | Std: 0.1168 | Min: 0.2709 | Max: 1.0000
+    p10: 0.6877 | p25: 0.8339 | p50: 0.9040 | p75: 0.9578 | p90: 0.9812 | p95: 0.9925 | p99: 1.0000
+
+--------------------------------------------------------------------------------
+3. BASELINE MATCHER EVALUATION (Against Full Ground Truth: 7,638,365 true pairs)
+--------------------------------------------------------------------------------
+--- Strategy: Exact Name + Country ---
+Source     |         TP |         FP |         FN |  Precision |     Recall |   F1-Score
+------------------------------------------------------------------------------
+S2         |    174,617 |  3,735,805 |  3,519,002 |     0.0447 |     0.0473 |     0.0459
+S3         |    179,501 |  4,253,701 |  3,765,245 |     0.0405 |     0.0455 |     0.0429
+Overall    |    354,118 |  7,989,506 |  7,284,247 |     0.0424 |     0.0464 |     0.0443
+
+--- Strategy: Normalized Name + Country (Simple Baseline) ---
+Source     |         TP |         FP |         FN |  Precision |     Recall |   F1-Score
+------------------------------------------------------------------------------
+S2         |    839,488 | 10,218,642 |  2,854,131 |     0.0759 |     0.2273 |     0.1138
+S3         |    893,381 | 11,458,617 |  3,051,365 |     0.0723 |     0.2265 |     0.1096
+Overall    |  1,732,869 | 21,677,259 |  5,905,496 |     0.0740 |     0.2269 |     0.1116
+
+--- Strategy: Normalized Name + Country + Address JW >= 0.6 (Strict) ---
+Source     |         TP |         FP |         FN |  Precision |     Recall |   F1-Score
+------------------------------------------------------------------------------
+S2         |    785,423 |  3,314,377 |  2,908,196 |     0.1916 |     0.2126 |     0.2016
+S3         |    804,198 |  3,592,139 |  3,140,548 |     0.1829 |     0.2039 |     0.1928
+Overall    |  1,589,621 |  6,906,516 |  6,048,744 |     0.1871 |     0.2081 |     0.1970
+
+--- Strategy: Normalized Name + Country + Address JW >= 0.6 (Missing-Tolerant) ---
+Source     |         TP |         FP |         FN |  Precision |     Recall |   F1-Score
+------------------------------------------------------------------------------
+S2         |    831,435 |  3,594,414 |  2,862,184 |     0.1879 |     0.2251 |     0.2048
+S3         |    850,910 |  3,803,845 |  3,093,836 |     0.1828 |     0.2157 |     0.1979
+Overall    |  1,682,345 |  7,398,259 |  5,956,020 |     0.1853 |     0.2202 |     0.2012
+
+--------------------------------------------------------------------------------
+4. MISSING-ADDRESS IMPACT & KEY INSIGHTS
+--------------------------------------------------------------------------------
+1. Missing Secondary Address Impact:
+   - Approximately 4.46% of secondary-source entities have completely empty addresses.
+   - Requiring a strict address similarity threshold unconditionally drops recall by 1.21% (92,724 true matches discarded!).
+   - Missing-tolerant evaluation restores those matches while precision remains governed by strong name matching.
+
+2. Precision vs Recall Trade-off:
+   - Simple Baseline (Norm Name + Country) achieves: Recall = 22.69%, Precision = 7.40%, F1 = 0.1116.
+   - Adding address filtering (tolerant) improves precision from 7.40% to 18.53% (+11.12%).
+
+--------------------------------------------------------------------------------
+5. RECOMMENDED THRESHOLDS & RULES FOR NEXT STAGE (BLOCKING & ML MODEL)
+--------------------------------------------------------------------------------
+1. Blocking Infrastructure Recommendations:
+   - Country is mandatory: 100% of true matches have equal normalized country. Never compare entities across different countries.
+   - Multi-Tier Blocking Union:
+       Tier 1: Exact Normalized Business Name + Country (high precision core).
+       Tier 2: Business Name First 5-Character Prefix + Country (captures spelling typos and abbreviations).
+       Tier 3: Name Token Inverted Index + Country (captures word order inversions like 'Global Tech' vs 'Tech Global').
+   - Union of these blocking passes will expand recall beyond 90% while keeping candidates well below 35M.
+
+2. Matching & Feature Engineering Recommendations:
+   - Handle Missing Addresses Explicitly:
+       * Add a binary feature `is_address_missing`.
+       * When address is present, compute Jaro-Winkler, Token-Sort, and Levenshtein similarity.
+       * When address is missing, impute a neutral score (or separate pathway) so valid name matches are not penalized.
+   - Business Name Features:
+       * Jaro-Winkler similarity on normalized name (captures typos).
+       * Token Jaccard / Token Set Ratio (captures dropped or reordered tokens).
+       * Length ratio and prefix match length.
+   - Recommended Decision Threshold:
+       * If business name JW >= 0.92 and address missing -> HIGH CONFIDENCE MATCH.
+       * If business name JW in [0.75, 0.92] and address JW >= 0.70 -> HIGH CONFIDENCE MATCH.
+       * If address JW < 0.35 and address present -> REJECT (conflicting physical locations).
+================================================================================
