@@ -34,46 +34,53 @@ A high-performance, memory-efficient entity resolution pipeline engineered for t
 
 ```mermaid
 flowchart TD
-    subgraph Data Sources
-        S1[Source 1: Primary Entities]
-        S2[Source 2: Secondary Entities]
-        S3[Source 3: Secondary Entities]
-        GT[Train Ground Truth]
+    subgraph Data_Sources["Data Sources"]
+        S1["Source 1: Primary Entities"]
+        S2["Source 2: Secondary Entities"]
+        S3["Source 3: Secondary Entities"]
+        GT["Train Ground Truth"]
     end
 
-    subgraph Preprocessing & Normalization
-        NORM[Unicode NFC Normalization<br/>Devanagari Preservation<br/>Legal Suffix Canonicalization<br/>Address & Country Standards]
+    subgraph Preprocessing["Preprocessing & Normalization"]
+        NORM["Unicode NFC Normalization<br/>Devanagari Preservation<br/>Legal Suffix Canonicalization<br/>Address & Country Standards"]
     end
 
-    subgraph Bipartite Blocking
-        IDX2[S2 Multi-Key Index<br/>Country + Name + Prefix + Token]
-        IDX3[S3 Multi-Key Index<br/>Country + Name + Prefix + Token]
-        BLOCK[Candidate Generator<br/>Prunes Cross-Country & O(N^2) Space]
+    subgraph Blocking["Bipartite Blocking"]
+        IDX2["S2 Multi-Key Index<br/>Country + Name + Prefix + Token"]
+        IDX3["S3 Multi-Key Index<br/>Country + Name + Prefix + Token"]
+        BLOCK["Candidate Generator<br/>Prunes Cross-Country & Full Cartesian Space"]
     end
 
-    subgraph Hard Negative Mining & Class Balancing
-        HNEG[Hard Negative Prioritization<br/>Tier 1: Identical Normalized Name<br/>Tier 2: Token / Prefix Match + Different Address<br/>Tier 3: Same-Country Blocking Candidates]
-        SPLIT[Grouped S1 Entity Split<br/>Train: 70% | Val: 15% | Holdout: 15%<br/>Strict Disjoint Partition]
+    subgraph Sampling["Hard Negative Mining & Class Balancing"]
+        HNEG["Hard Negative Prioritization<br/>Tier 1: Identical Normalized Name<br/>Tier 2: Token / Prefix Match + Different Address<br/>Tier 3: Same-Country Blocking Candidates"]
+        SPLIT["Grouped S1 Entity Split<br/>Train: 70% | Val: 15% | Holdout: 15%<br/>Strict Disjoint Partition"]
     end
 
-    subgraph Feature Engineering
-        FEAT[26 ML Features<br/>Country + Name + Address + Interaction<br/>Missing-Address Resilience]
+    subgraph Features["Feature Engineering"]
+        FEAT["26 ML Features<br/>Country + Name + Address + Interaction<br/>Missing-Address Resilience"]
     end
 
-    subgraph Sharded Output & Validation
-        SHARDS[Chunked Shards<br/>Parquet / CSV Parts]
-        AUDIT[Leakage & Integrity Auditor<br/>0 S1 Cross-Split Leaks<br/>0 Mislabeled Positives]
-        SUMM[Summary Report<br/>output/training_pairs_summary.txt]
+    subgraph Output_Validation["Sharded Output & Validation"]
+        SHARDS["Chunked Shards<br/>Parquet / CSV Parts"]
+        AUDIT["Leakage & Integrity Auditor<br/>0 S1 Cross-Split Leaks<br/>0 Mislabeled Positives"]
+        SUMM["Summary Report<br/>output/training_pairs_summary.txt"]
     end
 
-    S1 & S2 & S3 --> NORM
-    NORM --> IDX2 & IDX3
-    S1 & IDX2 & IDX3 --> BLOCK
-    BLOCK & GT --> HNEG
+    S1 --> NORM
+    S2 --> NORM
+    S3 --> NORM
+    NORM --> IDX2
+    NORM --> IDX3
+    S1 --> BLOCK
+    IDX2 --> BLOCK
+    IDX3 --> BLOCK
+    BLOCK --> HNEG
+    GT --> HNEG
     HNEG --> SPLIT
     SPLIT --> FEAT
     FEAT --> SHARDS
-    SHARDS --> AUDIT --> SUMM
+    SHARDS --> AUDIT
+    AUDIT --> SUMM
 ```
 
 ---
